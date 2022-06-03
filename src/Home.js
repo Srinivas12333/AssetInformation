@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
 import {db} from './firebase'
+import {collection, addDoc, Timestamp} from 'firebase/firestore'
 
 const Home = () => {
     const [data,setData] = useState({
@@ -37,13 +38,22 @@ const Home = () => {
     const changeHandler = e =>{
         setData({...data,[e.target.name]:e.target.value});
     }
-    const submitHandler = e => {
+    const submitHandler = async (e) => {
         e.preventDefault();
         console.log(data);
         // db.child('asset-data').push(
         //   data,
         // )
-        
+        try {
+          await addDoc(collection(db, 'tasks'), {
+            adaptorserialnumber: data.adaptorserialnumber,
+            assetcode: data.assetcode,
+            created: Timestamp.now()
+          })
+          .then(res => console.log(res))
+        } catch (err) {
+          alert(err)
+        }
         
         
     }
